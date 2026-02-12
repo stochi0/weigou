@@ -31,7 +31,7 @@ Weigou strips away the complexity and gives you a lean framework with full 4D pa
 # Install (uv)
 uv pip install -e .
 
-# Create config
+# Create config (1 GPU, no parallelism)
 weigou-config --exp_name my_run --out_dir runs
 
 # Train (single node, 1 GPU)
@@ -39,6 +39,15 @@ torchrun --nproc_per_node=1 scripts/train.py --config runs/my_run/config.json
 
 # Train (multi-GPU: 2 DP)
 torchrun --nproc_per_node=2 scripts/train.py --config runs/my_run/config.json
+
+# Train with full 4D parallelism (example: tp=2, cp=2, pp=2, dp=2 → world_size=16)
+weigou-config --exp_name tp2_cp2_pp2_dp2 --out_dir runs \
+  --tp 2 --cp 2 --pp 2 --dp 2 \
+  --seq_len 2048 --mbs 1 \
+  --model_name HuggingFaceTB/SmolLM-360M-Instruct
+
+HF_TOKEN=... torchrun --nproc_per_node=16 scripts/train.py \
+  --config runs/tp2_cp2_pp2_dp2/config.json
 ```
 
 ---
@@ -48,13 +57,17 @@ torchrun --nproc_per_node=2 scripts/train.py --config runs/my_run/config.json
 Create experiments with `weigou-config`:
 
 ```bash
-weigou-config --exp_name tp2_pp2 \
-  --tp 2 --pp 2 \
+weigou-config --exp_name tp2_cp2_pp2_dp2 \
+  --tp 2 --cp 2 --pp 2 --dp 2 \
   --model_name HuggingFaceTB/SmolLM-360M-Instruct \
   --seq_len 2048 --mbs 8
 ```
 
 Parallelism must satisfy: `world_size = tp × cp × pp × dp`
+
+- `WORLD_SIZE` (total processes across all nodes) must equal `tp * cp * pp * dp`.
+- `seq_len` must be divisible by `cp`.
+- `num_attention_heads` and `num_key_value_heads` must be divisible by `tp` (in the underlying HF config or your overrides).
 
 ---
 
