@@ -6,8 +6,6 @@ Weigou strips away the complexity and gives you a lean framework with full 4D pa
 
 ![Weigou Mascot](https://www.svgrepo.com/show/380278/cybernetic-cyborg-halloween-machine-robot.svg)
 
-> Mascot: `Cybernetic Cyborg Machine Robot` from [SVG Repo](https://www.svgrepo.com/svg/380278/cybernetic-cyborg-halloween-machine-robot), licensed under CC0.
-
 ---
 
 ## Features
