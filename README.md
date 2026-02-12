@@ -1,6 +1,6 @@
 # weigou
 
-**Minimal distributed training for LLaMA-like models.** No bloat. Just the essentials.
+**A small distributed training for LLaMA-like models.** No bloat. Just the essentials.
 
 Weigou strips away the complexity and gives you a lean framework with full 4D parallelism and HuggingFace compatibility. Inspired by Pictron and Megatron-LM!
 
