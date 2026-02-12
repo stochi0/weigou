@@ -1,0 +1,11 @@
+__pycache__
+*.pth
+.vscode/
+weigou.egg-info
+*.ipynb
+wandb
+models
+runs
+debug
+bench
+sandbox

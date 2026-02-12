@@ -1,0 +1,1 @@
+"""Weigou CLI scripts."""

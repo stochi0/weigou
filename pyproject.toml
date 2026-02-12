@@ -1,0 +1,39 @@
+[project]
+name = "weigou"
+version = "0.1.0"
+description = "Minimal distributed training framework for LLaMA-like models with 4D parallelism"
+requires-python = ">=3.11"
+dependencies = [
+    "datasets",
+    "huggingface-hub",
+    "numpy",
+    "torch",
+    "transformers",
+    "wandb",
+    "flash-attn; sys_platform == 'linux'",
+    "triton; sys_platform == 'linux'",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[project.scripts]
+weigou-train = "scripts.train:main"
+weigou-config = "scripts.config:main"
+weigou-slurm = "scripts.slurm:main"
+weigou-metrics = "scripts.metrics:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["weigou", "scripts"]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = ["torch"]
+triton = ["torch"]
