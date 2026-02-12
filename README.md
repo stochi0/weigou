@@ -1,33 +1,12 @@
 # weigou
 
-<p align="center">
-  <svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-    <title id="title">Weigou logo</title>
-    <desc id="desc">Minimal logo representing distributed parallelism</desc>
-    <defs>
-      <linearGradient id="wg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#5B8DEF"/>
-        <stop offset="100%" stop-color="#7F53AC"/>
-      </linearGradient>
-    </defs>
-    <!-- Outer ring -->
-    <circle cx="70" cy="70" r="56" fill="none" stroke="url(#wg-gradient)" stroke-width="6"/>
-    <!-- Axes lines (4D parallelism vibe) -->
-    <line x1="18" y1="70" x2="122" y2="70" stroke="#A5B4FC" stroke-width="2.5" stroke-linecap="round" />
-    <line x1="70" y1="18" x2="70" y2="122" stroke="#A5B4FC" stroke-width="2.5" stroke-linecap="round" />
-    <!-- Four parallelism nodes -->
-    <circle cx="35" cy="70" r="8" fill="#111827" stroke="#60A5FA" stroke-width="3"/>
-    <circle cx="105" cy="70" r="8" fill="#111827" stroke="#60A5FA" stroke-width="3"/>
-    <circle cx="70" cy="35" r="8" fill="#111827" stroke="#A855F7" stroke-width="3"/>
-    <circle cx="70" cy="105" r="8" fill="#111827" stroke="#A855F7" stroke-width="3"/>
-    <!-- Center core -->
-    <circle cx="70" cy="70" r="10" fill="#111827" stroke="url(#wg-gradient)" stroke-width="4"/>
-  </svg>
-</p>
-
 **Minimal distributed training for LLaMA-like models.** No bloat. Just the essentials.
 
 Weigou strips away the complexity and gives you a lean framework with full 4D parallelism and HuggingFace compatibility. Inspired by Pictron and Megatron-LM!
+
+![Weigou Mascot](https://www.svgrepo.com/show/380278/cybernetic-cyborg-halloween-machine-robot.svg)
+
+> Mascot: `Cybernetic Cyborg Machine Robot` from [SVG Repo](https://www.svgrepo.com/svg/380278/cybernetic-cyborg-halloween-machine-robot), licensed under CC0.
 
 ---
 
