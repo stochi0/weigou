@@ -1,91 +1,94 @@
-# weigou
+# Weigou
 
-**A small distributed training for LLaMA-like models.** No bloat. Just the essentials.
+Distributed training experiments for LLaMA-style language models.
+The implementation separates tensor, context, pipeline, and data parallelism
+so their behavior can be studied together.
 
-Weigou strips away the complexity and gives you a lean framework with full 4D parallelism and HuggingFace compatibility. Inspired by Pictron and Megatron-LM!
+## What is included
 
-![Weigou Mascot](https://www.svgrepo.com/show/380278/cybernetic-cyborg-halloween-machine-robot.svg)
+| Parallelism | Operation |
+| --- | --- |
+| Tensor (TP) | Split model layers across processes |
+| Context (CP) | Partition sequences and use ring attention |
+| Pipeline (PP) | Schedule model stages with 1F1B or AFAB execution |
+| Data (DP) | Replicate the model and distribute training data |
 
----
+The repository also includes Hugging Face model and dataset loading,
+SafeTensors checkpoints, SLURM helpers, and optional Weights & Biases logging.
+Flash Attention and Triton dependencies apply on Linux.
 
-## Features
+## Installation
 
-| Parallelism | Description |
-|------------|-------------|
-| **TP** | Tensor parallelism — split layers across GPUs |
-| **CP** | Context parallelism — ring attention for long sequences |
-| **PP** | Pipeline parallelism — 1F1B or AFAB schedules |
-| **DP** | Data parallelism — replicate model, split data |
+Use Python 3.11 or later and [uv](https://docs.astral.sh/uv/):
 
-- Flash Attention & Triton RMSNorm (Linux)
-- HuggingFace models & datasets
-- SafeTensors checkpointing
-- SLURM job management
-- WandB logging
-
----
-
-## Quick Start
-
-```bash
-# Install (uv)
-uv pip install -e .
-
-# Create config (1 GPU, no parallelism)
-weigou-config --exp_name my_run --out_dir runs
-
-# Train (single node, 1 GPU)
-torchrun --nproc_per_node=1 scripts/train.py --config runs/my_run/config.json
-
-# Train (multi-GPU: 2 DP)
-torchrun --nproc_per_node=2 scripts/train.py --config runs/my_run/config.json
-
-# Train with full 4D parallelism (example: tp=2, cp=2, pp=2, dp=2 → world_size=16)
-weigou-config --exp_name tp2_cp2_pp2_dp2 --out_dir runs \
-  --tp 2 --cp 2 --pp 2 --dp 2 \
-  --seq_len 2048 --mbs 1 \
-  --model_name HuggingFaceTB/SmolLM-360M-Instruct
-
-HF_TOKEN=... torchrun --nproc_per_node=16 scripts/train.py \
-  --config runs/tp2_cp2_pp2_dp2/config.json
+```sh
+git clone https://github.com/stochi0/weigou.git
+cd weigou
+uv sync --locked
 ```
 
----
+CUDA is required for the GPU paths. CPU mode is available for debugging.
+Set `HF_TOKEN` when the chosen Hugging Face model requires authentication;
+do not commit access tokens or generated configs containing them.
 
-## Config
+## First run
 
-Create experiments with `weigou-config`:
+Create a configuration for one process, then launch training:
 
-```bash
-weigou-config --exp_name tp2_cp2_pp2_dp2 \
-  --tp 2 --cp 2 --pp 2 --dp 2 \
-  --model_name HuggingFaceTB/SmolLM-360M-Instruct \
-  --seq_len 2048 --mbs 8
+```sh
+uv run weigou-config --exp_name first-run --out_dir runs
+uv run torchrun --nproc_per_node=1 scripts/train.py \
+  --config runs/first-run/config.json
 ```
 
-Parallelism must satisfy: `world_size = tp × cp × pp × dp`
+Configuration generation reads the selected model's Hugging Face configuration.
+The default model is `HuggingFaceTB/SmolLM-360M-Instruct`; the generated training
+configuration uses TinyStories. Runs may download model assets and data.
 
-- `WORLD_SIZE` (total processes across all nodes) must equal `tp * cp * pp * dp`.
-- `seq_len` must be divisible by `cp`.
-- `num_attention_heads` and `num_key_value_heads` must be divisible by `tp` (in the underlying HF config or your overrides).
+## Distributed runs
 
----
+For a two-process data-parallel run, create a matching configuration:
 
-## CLI
+```sh
+uv run weigou-config --exp_name dp2 --out_dir runs --dp 2
+uv run torchrun --nproc_per_node=2 scripts/train.py \
+  --config runs/dp2/config.json
+```
+
+The configuration must satisfy:
+
+- `world_size = tp × cp × pp × dp`.
+- Sequence length is divisible by `cp`.
+- Attention-head and key/value-head counts are divisible by `tp`.
+
+Use `uv run weigou-config --help` for model dimensions, parallelism, sequence
+length, microbatch size, and CPU/debug options. Configuration generation replaces
+the selected experiment directory; use a new `--exp_name` to preserve an old run.
+
+## Checks and tools
+
+Tests are organized by [parallelism mode](tests/). GPU and distributed tests
+require the corresponding hardware and process launch; test presence alone does
+not establish correctness for every combination or a throughput advantage.
+
+```sh
+uv sync --locked --extra dev
+uv run pytest tests/test_data_unit.py
+```
 
 | Command | Purpose |
-|---------|---------|
-| `weigou-train` | Run training |
-| `weigou-config` | Generate experiment configs |
-| `weigou-slurm` | Submit & manage SLURM jobs |
-| `weigou-metrics` | Parse training metrics |
+| --- | --- |
+| `weigou-train` | Launch the training entrypoint |
+| `weigou-config` | Generate an experiment configuration |
+| `weigou-slurm` | Prepare and manage SLURM jobs |
+| `weigou-metrics` | Read training metrics |
 
----
+## Repository guide and references
 
-## Requirements
+Model, data, training, and checkpoint code live in [weigou/](weigou/).
+Parallel operations live in [weigou/parallel/](weigou/parallel/), and job templates
+are under [slurm/](slurm/).
 
-- Python ≥ 3.11
-- PyTorch
-- CUDA (for Flash Attention; CPU mode supported for debugging)
-- `HF_TOKEN` for HuggingFace model access
-
+The project takes inspiration from
+[Picotron](https://github.com/huggingface/picotron) and
+[Megatron-LM](https://github.com/NVIDIA/Megatron-LM).
