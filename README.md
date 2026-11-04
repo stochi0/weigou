@@ -92,3 +92,5 @@ are under [slurm/](slurm/).
 The project takes inspiration from
 [Picotron](https://github.com/huggingface/picotron) and
 [Megatron-LM](https://github.com/NVIDIA/Megatron-LM).
+
+[Citation guide](CITATION.md) · [BibTeX](CITATION.bib)
