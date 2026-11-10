@@ -92,3 +92,22 @@ are under [slurm/](slurm/).
 The project takes inspiration from
 [Picotron](https://github.com/huggingface/picotron) and
 [Megatron-LM](https://github.com/NVIDIA/Megatron-LM).
+
+## Citation
+
+<!-- BEGIN generated citations -->
+
+Citation metadata matches the [ORCID record](https://orcid.org/0009-0007-2252-8905). [Complete bibliography](https://www.latentpaths.com/citations/all.bib).
+
+```bibtex
+@software{bodadeprojectweigou,
+  author = {Bodade, Ayush},
+  title = {{Weigou}},
+  url = {https://github.com/stochi0/weigou},
+  note = {Software implementation; cite the original research separately. Specify the commit or version used.}
+}
+```
+
+[Citation file](https://www.latentpaths.com/citations/project/weigou.bib) · [Work](https://github.com/stochi0/weigou)
+
+<!-- END generated citations -->
