@@ -4,7 +4,7 @@ Distributed training experiments for LLaMA-style language models.
 The implementation separates tensor, context, pipeline, and data parallelism
 so their behavior can be studied together.
 
-## What is included
+## Parallelism
 
 | Parallelism | Operation |
 | --- | --- |
@@ -65,23 +65,16 @@ Use `uv run weigou-config --help` for model dimensions, parallelism, sequence
 length, microbatch size, and CPU/debug options. Configuration generation replaces
 the selected experiment directory; use a new `--exp_name` to preserve an old run.
 
-## Checks and tools
-
-Tests are organized by [parallelism mode](tests/). GPU and distributed tests
-require the corresponding hardware and process launch; test presence alone does
-not establish correctness for every combination or a throughput advantage.
+## Checks
 
 ```sh
 uv sync --locked --extra dev
 uv run pytest tests/test_data_unit.py
 ```
 
-| Command | Purpose |
-| --- | --- |
-| `weigou-train` | Launch the training entrypoint |
-| `weigou-config` | Generate an experiment configuration |
-| `weigou-slurm` | Prepare and manage SLURM jobs |
-| `weigou-metrics` | Read training metrics |
+[Distributed tests](tests/) require their corresponding hardware and process
+launch. See `weigou-config --help` and the scripts under [scripts/](scripts/)
+for other entrypoints.
 
 ## Repository guide and references
 
