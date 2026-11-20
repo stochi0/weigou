@@ -72,7 +72,7 @@ uv sync --locked --extra dev
 uv run pytest tests/test_data_unit.py
 ```
 
-[Distributed tests](tests/) require their corresponding hardware and process
+[Tests](tests/) require their corresponding hardware and process
 launch. See `weigou-config --help` and the scripts under [scripts/](scripts/)
 for other entrypoints.
 
